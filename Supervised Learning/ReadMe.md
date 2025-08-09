@@ -1,4 +1,4 @@
-# 🚀 Amazon ML Summer School 2024 - Supervised Learning Journey
+# 🚀 Amazon ML Summer School 2025 - Supervised Learning Journey
 
 <div align="center">
 
