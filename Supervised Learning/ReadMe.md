@@ -15,7 +15,6 @@
 ## 📚 What I Learned Today
 
 ### 🧠 Module 1: Foundations of Supervised Learning
-> **Instructor:** Anil | **Duration:** ~90 minutes
 
 #### 🎯 **Key Concepts Mastered:**
 - **🔄 ML Pipeline Architecture**
@@ -49,7 +48,6 @@
 ---
 
 ### 🌳 Module 2: Tree-Based Models & Ensembles
-> **Instructor:** Abhishek | **Duration:** ~80 minutes
 
 #### 🎯 **Advanced Techniques Learned:**
 
@@ -79,7 +77,6 @@ Boosting:
 ---
 
 ### 📈 Module 3: Evaluation & Classical Algorithms
-> **Instructor:** Mayang | **Duration:** ~60 minutes
 
 #### 🎯 **Evaluation Expertise:**
 
