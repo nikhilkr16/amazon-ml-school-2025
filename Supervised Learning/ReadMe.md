@@ -159,13 +159,7 @@ graph LR
 - [x] 🌳 Advanced ensemble methods
 - [x] ⚖️ Bias-variance optimization strategies
 
-### 📈 **Knowledge Depth Achieved:**
-```
-Beginner    ████████████████████████████████████████ 100%
-Intermediate ████████████████████████████████████████ 100%  
-Advanced    ████████████████████████████████         85%
-Expert      █████████████████                        40%
-```
+ 
 
 ---
 
@@ -195,8 +189,8 @@ This supervised learning foundation will serve as the **cornerstone** for my jou
 
 *🌟 Keep Learning • Keep Growing • Keep Building Amazing Things! 🌟*
 
-[![LinkedIn](https://img.shields.io/badge/Connect-LinkedIn-blue?style=flat-square&logo=linkedin)](your-linkedin)
-[![GitHub](https://img.shields.io/badge/Follow-GitHub-black?style=flat-square&logo=github)](your-github)
-[![Email](https://img.shields.io/badge/Contact-Email-red?style=flat-square&logo=gmail)](mailto:your-email)
+[![LinkedIn](https://img.shields.io/badge/Connect-LinkedIn-blue?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/nikhilkr16/)
+[![GitHub](https://img.shields.io/badge/Follow-GitHub-black?style=flat-square&logo=github)]([your-github](https://github.com/nikhilkr16/))
+[![Email](https://img.shields.io/badge/Contact-Email-red?style=flat-square&logo=gmail)](mailto:nikhilkr3000@gmail.com)
 
 </div>
