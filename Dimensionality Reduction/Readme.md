@@ -1,4 +1,4 @@
-# 🌟 Amazon ML Summer School 2024 – Module 3: Dimensionality Reduction
+# 🌟 Amazon ML Summer School 2025 – Module 3: Dimensionality Reduction
 
 <div align="center">
 
