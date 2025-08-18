@@ -161,8 +161,7 @@
 
 ---
 
-### 📚 **Reference Video:** [AMAZON ML Summer School 2024 – Module 3: Dimensionality Reduction](https://youtu.be/BBLWCFlECyM?si=ac7m3CLPhJHr18BD)
-
+ 
 ---
 
 **#DimensionalityReduction #PCA #SVD #NMF #AmazonMLSummerSchool #DataScience #FeatureSelection #MachineLearning #RevisionGuide**
