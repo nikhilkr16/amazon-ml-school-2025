@@ -119,13 +119,6 @@
 
 ---
 
-## 📚 **Reference Links**
-
-- 💻 **Session Video:** [AMAZON ML Summer School 2024 – Module 4: Unsupervised Learning](https://youtu.be/Dfc3xSHEbrk?si=rMbHyMvsT0RVU00v)
-- 📖 **Recommended Reading:**
-  - Deep Learning, Chapter 15: Unsupervised Feature Learning and Deep Learning (Goodfellow et al.)
-  - “A Tutorial on Unsupervised Machine Learning” (ArXiv)
-  - GANs in Action (Book)
 
 ---
 
