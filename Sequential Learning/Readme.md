@@ -1,4 +1,4 @@
-# 🔄 Amazon ML Summer School 2024 – Module 5: Sequential Learning
+# 🔄 Amazon ML Summer School 2025 – Module 5: Sequential Learning
 
 <div align="center">
 
