@@ -14,7 +14,7 @@
 
 ## 📅 What I Learned Today
 
-### 🌟 **Part 1: Hidden Markov Models (HMMs) by Arin**
+### 🌟 **Part 1: Hidden Markov Models (HMMs) **
 
 #### 🔍 **Core Concept**
 Hidden Markov Models are **generative probabilistic models** for sequential data where:
@@ -64,7 +64,7 @@ b_{j,k} = Count(j emits k) / Count(j)
 
 ---
 
-### 🌟 **Part 2: Attention & Transformers by Pram Verma**
+### 🌟 **Part 2: Attention & Transformers**
 
 #### 🎯 **Sequence-to-Sequence Models**
 ```
