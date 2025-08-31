@@ -1,12 +1,12 @@
-# 🤖 Amazon ML Summer School 2025 – Module 7: Generative AI and Large Language Models
+# 🔍 Amazon ML Summer School 2023 – Module 7: Causal Inference
 
 <div align="center">
 
-![Generative AI](https://img.shields.io/badge/Module%207-Generative%20AI%20%26%20LLMs-purple?style=for-the-badge)
+![Causal Inference](https://img.shields.io/badge/Module%207-Causal%20Inference-green?style=for-the-badge)
 ![Amazon ML](https://img.shields.io/badge/Learning-Amazon%20ML%20School-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge)
 
-*From Transformers to ChatGPT – Understanding the revolution in AI that's reshaping our world!*
+*From correlation to causation – Understanding cause-effect relationships for robust AI decision making!*
 
 </div>
 
@@ -14,706 +14,559 @@
 
 ## 📅 What I Learned Today
 
-### 🎯 **The AI Revolution Timeline**
+### 🎯 **The Fundamental Problem: Correlation ≠ Causation**
 
-#### 🚀 **Why Now? The Perfect Storm**
-The recent explosion in generative AI wasn't overnight magic – it was the convergence of three critical factors:
+#### 🚨 **Why Causal Inference Matters**
+Understanding the difference between correlation and causation is crucial for making reliable decisions in AI and data science. Traditional supervised learning focuses on prediction accuracy, but causal inference answers the "What if?" questions that drive real-world interventions.
 
-1. **Transformer Architecture (2017)**: Google's "Attention is All You Need" paper revolutionized sequence modeling
-2. **Computational Power & Data**: Exponential growth in GPU capabilities and internet-scale datasets
-3. **RLHF (Reinforcement Learning from Human Feedback)**: OpenAI's breakthrough in aligning AI with human preferences
-
-##### **Key Timeline Milestones**
-```
-1956: AI term coined
-1964: First chatbot (ELIZA)
-1982: Recurrent Neural Networks
-1997: Deep Blue defeats Kasparov
-2006: Deep Learning renaissance
-2013: Word2Vec embeddings
-2017: Transformer architecture
-2018: BERT released
-2019-2022: GPT series evolution
-2022: ChatGPT launches - The tipping point
+##### **Classic Examples of Spurious Correlations**
+```python
+# Marriage & Income: Positive correlation but age confounds both
+# Ice Cream Sales & Sunburn Cases: Hot weather causes both
+# Exercise & Cholesterol: Age creates misleading global pattern
+# Firefighters & Fire Incidents: Government policy confounds both
 ```
 
-#### 💡 **Generative AI vs Traditional ML**
-- **Traditional ML**: Discriminative models that classify/predict
-- **Generative AI**: Creates new content from learned patterns
-- **LLMs**: Specialized generative models focused on text/language
+#### 💡 **Simpson's Paradox**
+A phenomenon where a trend appears in different groups of data but disappears or reverses when the groups are combined. This highlights the critical importance of identifying and controlling for confounding variables.
+
+**Key Example**: Medical treatments showing opposite effects at aggregate vs. stratified levels due to age confounding.
 
 ---
 
-### 🎯 **Transformer Architecture: The Foundation**
+### 🎯 **Potential Outcomes Framework (Rubin Causal Model)**
 
-#### ⚡ **Revolutionary Design Principles**
+#### 🔬 **Core Concepts**
+The foundation of modern causal inference, defining causal effects through counterfactual reasoning.
 
-**Self-Attention Mechanism**
+##### **Fundamental Notation**
 ```python
-# Core concept: Every word attends to every other word
-Attention(Q,K,V) = Softmax(QK^T/√d_k)V
+# For individual i and binary treatment T:
+Yi(1) = Potential outcome if treated (T=1)
+Yi(0) = Potential outcome if not treated (T=0)
 
-# Multi-head attention allows different representation subspaces
-MultiHead(Q,K,V) = Concat(head_1,...,head_h)W^O
+# Individual Treatment Effect (ITE)
+τi = Yi(1) - Yi(0)
+
+# The Fundamental Problem: We can only observe one potential outcome
+# If Ti = 1, we observe Yi(1) but Yi(0) is counterfactual
+# If Ti = 0, we observe Yi(0) but Yi(1) is counterfactual
 ```
 
-**Key Advantages over RNNs/LSTMs:**
-- **Parallelizable**: Process entire sequences simultaneously
-- **Long-range dependencies**: No vanishing gradient problem
-- **Scalable**: Efficient training on massive datasets
+#### ⚖️ **Critical Assumptions for Causal Identification**
 
-#### 🏗️ **Transformer Variants**
-
-**1. Encoder-Only Models (BERT family)**
-```python
-# Bidirectional encoding for understanding
-# Training: Masked Language Modeling (MLM)
-# Applications: Classification, NER, sentiment analysis
+**1. SUTVA (Stable Unit Treatment Value Assumption)**
+```
+No interference between units + One version of treatment
+Example violation: Product discounts affecting similar products
 ```
 
-**2. Decoder-Only Models (GPT family)**
+**2. Ignorability/Unconfoundedness**
 ```python
-# Autoregressive generation
-# Training: Causal Language Modeling
-# Applications: Text generation, completion, chat
+(Yi(1), Yi(0)) ⊥ Ti | Xi
+# Treatment assignment independent of potential outcomes given confounders
+# All confounders are observed and measured
 ```
 
-**3. Encoder-Decoder Models (T5, BART)**
+**3. Positivity**
 ```python
-# Full sequence-to-sequence capability
-# Training: Text-to-text unified framework
-# Applications: Translation, summarization, Q&A
+0 < P(T=1|X=x) < 1 for all x
+# Non-zero probability of treatment assignment for all covariate values
+# Ensures overlap between treatment and control groups
 ```
 
 ---
 
-### 🎯 **The GPT Evolution: From GPT-1 to GPT-4**
+### 🎯 **Treatment Effects Hierarchy**
 
-#### 📈 **GPT-1: The Pioneer (2018)**
-- **Parameters**: 117M
-- **Innovation**: Unsupervised pre-training + supervised fine-tuning
-- **Key Insight**: Transfer learning works for NLP
+#### 📊 **Types of Treatment Effects**
 
-**Training Pipeline:**
+**Average Treatment Effect (ATE) - Population Level**
 ```python
-# Stage 1: Unsupervised pre-training
-# Predict next word on massive text corpus
-loss = -Σ log P(w_i | w_1,...,w_{i-1})
-
-# Stage 2: Supervised fine-tuning
-# Task-specific adaptation with labeled data
+ATE = E[Yi(1)] - E[Yi(0)]
+# Overall effect across entire population
+# Used for policy decisions and general interventions
 ```
 
-#### 🧠 **GPT-2: Scaling Up (2019)**
-- **Parameters**: 1.5B (largest variant)
-- **Innovation**: Zero-shot task performance
-- **Key Discovery**: Scale leads to emergent capabilities
-
-**Scaling Laws:**
+**Conditional Average Treatment Effect (CATE) - Subgroup Level**
 ```python
-# Perplexity decreases predictably with model size
-# Larger models → Better performance
-# This insight drove the race to scale
+CATE = E[Yi(1)|X] - E[Yi(0)|X]
+# Effect within specific subgroups
+# Used for targeted interventions
 ```
 
-#### 🌟 **GPT-3: The Breakthrough (2020)**
-- **Parameters**: 175B
-- **Innovation**: In-context learning
-- **Game Changer**: Few-shot learning without fine-tuning
-
-**In-Context Learning Types:**
+**Individual Treatment Effect (ITE) - Individual Level**
 ```python
-# Zero-shot: Task description only
-"Translate English to French: 'Hello' →"
-
-# One-shot: Single example provided
-"English: Hello, French: Bonjour
-English: Goodbye, French: →"
-
-# Few-shot: Multiple examples
-"English: Hello, French: Bonjour
-English: Goodbye, French: Au revoir
-English: Thank you, French: →"
-```
-
-#### 🎯 **InstructGPT: Alignment Revolution (2022)**
-**Four-Stage Training Process:**
-
-**Stage 1: Pre-training**
-```python
-# Standard language modeling on internet text
-# Objective: Learn world knowledge and language patterns
-```
-
-**Stage 2: Supervised Fine-tuning (SFT)**
-```python
-# Human-curated instruction-following examples
-# 10K-100K high-quality prompt-response pairs
-# Objective: Learn to follow instructions
-```
-
-**Stage 3: Reward Model Training**
-```python
-# Human preferences on model outputs
-# Ranking-based loss function
-# Objective: Learn human preference patterns
-```
-
-**Stage 4: RLHF with PPO**
-```python
-# Proximal Policy Optimization
-# Maximize reward while preventing over-optimization
-# Objective: Align model behavior with human values
-```
-
-#### 🚀 **ChatGPT & GPT-4: Mainstream Adoption**
-- **ChatGPT**: Multi-turn dialogue capability
-- **GPT-4**: Multimodal (text + images), massive performance gains
-- **Architecture**: Suspected mixture-of-experts design
-
----
-
-### 🎯 **Modern Open-Source LLMs: The Llama Revolution**
-
-#### 🦙 **Llama Series Evolution**
-
-**Llama 1 (2023)**
-```python
-# Parameters: 7B, 13B, 30B, 65B
-# Training data: Publicly available datasets
-# Key innovation: Efficiency over pure scale
-# RMSNorm, SwiGLU activation, RoPE embeddings
-```
-
-**Llama 2 (2023)**
-```python
-# 40% more training data
-# Double context length (4K tokens)
-# Llama 2-Chat: SFT + RLHF trained
-# Safety-focused reward models
-```
-
-**Llama 3 (2024)**
-```python
-# Parameters: 8B, 70B (400B+ in development)
-# Vocabulary: 128K tokens
-# Context length: 8K tokens
-# 7x larger training dataset
-# Multimodal capabilities (vision + audio)
-```
-
-**Performance Comparison:**
-| Model | Parameters | Performance | Key Strength |
-|-------|------------|-------------|--------------|
-| Llama 3 70B | 70B | Beats GPT-3.5 | Open-source power |
-| GPT-4 | ~1.7T | SOTA across benchmarks | Multimodal reasoning |
-| Claude 3.5 | Unknown | Strong reasoning | Safety-focused |
-| Gemini Pro | Unknown | Multimodal | Google integration |
-
----
-
-### 🎯 **Multimodal AI: Beyond Text**
-
-#### 🖼️ **CLIP: Connecting Vision and Language**
-
-**Architecture & Training:**
-```python
-# Contrastive learning between text and images
-# Maximize similarity for correct pairs
-# Minimize similarity for incorrect pairs
-
-def contrastive_loss(text_features, image_features):
-    # Dot product similarity matrix
-    logits = text_features @ image_features.T
-    # Maximize diagonal elements (correct pairs)
-    # Minimize off-diagonal elements (incorrect pairs)
-    return cross_entropy_loss(logits, targets)
-```
-
-**Zero-shot Classification:**
-```python
-# No fine-tuning needed for new classes
-# Encode image and class names
-# Choose class with highest similarity
-```
-
-#### 🦩 **Flamingo: Visual Language Understanding**
-
-**Key Innovations:**
-- **Interleaved text-image input**
-- **Gated cross-attention layers**
-- **Perceiver resampler for visual features**
-- **Few-shot visual reasoning**
-
-**Architecture:**
-```python
-# Frozen vision encoder + Frozen LLM
-# Trainable components:
-# 1. Perceiver resampler (reduce visual token count)
-# 2. Gated cross-attention (visual-text fusion)
+ITE = Yi(1) - Yi(0)
+# Personalized effect for each individual
+# Used for precision medicine and personalized recommendations
 ```
 
 ---
 
-### 🎯 **Fine-tuning and Adaptation Strategies**
+### 🎯 **Classical Causal Inference Methods**
 
-#### 🔧 **When to Use Each Approach**
+#### 📊 **1. Propensity Score Methods**
 
-**1. Training from Scratch**
-- **When**: You have massive domain-specific data and compute
-- **Cost**: Millions of dollars, weeks of training
-- **Use case**: Building foundation models
-
-**2. Fine-tuning**
-- **When**: Adapting to specific domains/tasks
-- **Data needed**: 1K-100K examples
-- **Time**: Hours to days
-- **Performance**: Significant improvement on target tasks
-
-**3. Parameter-Efficient Fine-tuning (PEFT)**
+**Propensity Score Definition**
 ```python
-# LoRA (Low-Rank Adaptation)
-# Instead of updating all parameters, decompose updates
-W = W_0 + B*A  # where B and A are low-rank matrices
-# Reduces trainable parameters by 10,000x while maintaining performance
+e(X) = P(T=1|X) = Probability of treatment given confounders
+# Key insight: If (Y(1),Y(0)) ⊥ T|X, then (Y(1),Y(0)) ⊥ T|e(X)
+# Reduces high-dimensional X to scalar e(X)
 ```
 
-**4. Prompt Engineering**
-- **When**: Quick adaptation without training
-- **Techniques**: Few-shot, chain-of-thought, role-playing
-- **Cost**: Nearly zero
-
-**5. Retrieval Augmented Generation (RAG)**
+##### **Inverse Propensity Weighting (IPW)**
 ```python
-# Step 1: Retrieve relevant documents
-relevant_docs = vector_search(query, knowledge_base)
+# ATE Estimator using importance sampling
+ATE_IPW = (1/N) * Σ[Ti * Yi / e(Xi)] - (1/N) * Σ[(1-Ti) * Yi / (1-e(Xi))]
 
-# Step 2: Augment prompt with retrieved context
-prompt = f"""
-Context: {relevant_docs}
-Question: {query}
-Answer based on the provided context:
-"""
-
-# Step 3: Generate grounded response
-response = llm.generate(prompt)
+# Intuition: Reweight observations to mimic RCT
+# Rare treatment assignments get higher weights
+# Creates pseudo-population with no confounding
 ```
 
----
-
-### 🎯 **Advanced Prompting Techniques**
-
-#### 🎨 **Prompt Engineering Best Practices**
-
-**Chain-of-Thought Prompting:**
+**Mathematical Foundation: Importance Sampling**
 ```python
-# Instead of direct answer, show reasoning steps
-prompt = """
-Question: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. 
-Each can has 3 tennis balls. How many tennis balls does he have now?
-
-Let me think step by step:
-1. Roger starts with 5 tennis balls
-2. He buys 2 cans, each with 3 balls
-3. New balls = 2 × 3 = 6 balls
-4. Total = 5 + 6 = 11 balls
-
-Therefore, Roger has 11 tennis balls.
-
-Now solve this problem:
-[Your problem here]
-"""
+# Want to estimate E_H[f(Y)] but have samples from G
+# Solution: E_H[f(Y)] = E_G[f(Y) * h(Y)/g(Y)]
+# In causal context:
+# - G: Observational distribution with propensity e(X)
+# - H: RCT distribution with uniform treatment assignment (0.5)
+# - Weight = 0.5 / e(X) for treated, 0.5 / (1-e(X)) for control
 ```
 
-**Role-Based Prompting:**
+##### **Doubly Robust Estimation**
 ```python
-prompt = """
-You are an expert Python developer with 10 years of experience.
-Write clean, efficient code with proper documentation.
+# Combines IPW with outcome modeling
+# Two regression models: μ₀(X) = E[Y|X,T=0], μ₁(X) = E[Y|X,T=1]
 
-Task: Create a function to calculate Fibonacci numbers.
-"""
+ATE_DR = ATE_IPW + (1/N) * Σ[(1-Ti) * (μ₁(Xi) - μ₀(Xi))]
+
+# Robustness: Consistent if EITHER propensity OR outcome model is correct
+# Lower bias than IPW, more robust than pure regression
 ```
 
-**Template-Based Prompting:**
+##### **Subclassification (Stratification)**
 ```python
-prompt = """
-Review the following product:
+# Partition data into J strata based on propensity score quantiles
+# Within each stratum j: ATE_j = mean(Y_treated) - mean(Y_control)
+# Overall ATE = weighted average of stratum-specific effects
 
-Product Name: [NAME]
-Features: [FEATURES]
-Pros: [PROS]
-Cons: [CONS]
-Overall Rating: [RATING]/5
-
-Use this exact format for your review.
-"""
+# Geometric intuition: Equal weighting gives rare groups higher influence
+# Converges to IPW as number of strata → ∞
 ```
 
 ---
 
-### 🎯 **Evaluation Metrics and Challenges**
+### 🎯 **Modern Representation Learning Approaches**
 
-#### 📊 **Text Generation Metrics**
+#### 🧠 **TARNet (Treatment-Agnostic Representation Networks)**
 
-**Perplexity:**
+##### **Core Innovation: Balanced Representations**
 ```python
-# Lower is better - how "surprised" is the model?
-perplexity = 2^(-Σ log_2 P(x_i))
-# Perfect prediction: perplexity = 1
-# Random guessing: perplexity = vocabulary_size
+# Learn representation Φ(X) that is balanced across treatment groups
+# Minimize: α * L_factual + β * IPM(Φ(X)|T=1, Φ(X)|T=0)
+
+# L_factual: Standard supervised loss on observed outcomes
+# IPM: Integral Probability Metric measuring distribution distance
 ```
 
-**BLEU Score (Machine Translation):**
+##### **Architecture Design**
 ```python
-# N-gram overlap between generated and reference text
-# Higher is better, but has limitations for creative tasks
+# Shared representation network
+Φ(X) = shared_network(X)  # Learn balanced features
+
+# Separate outcome heads for each treatment
+μ₀(X) = outcome_head_0(Φ(X))  # Control outcome predictor
+μ₁(X) = outcome_head_1(Φ(X))  # Treatment outcome predictor
+
+# Individual Treatment Effect
+ITE = μ₁(X) - μ₀(X)
 ```
 
-**ROUGE Score (Summarization):**
+##### **Maximum Mean Discrepancy (MMD)**
 ```python
-# Recall-oriented metric
-# Measures n-gram overlap with reference summaries
+# Practical estimate of IPM using kernel methods
+MMD²(P,Q) = E_P[k(X,X')] + E_Q[k(Y,Y')] - 2*E_{P,Q}[k(X,Y)]
+
+# Intuition: High MMD when distributions are far apart
+# Used to balance representations across treatment groups
 ```
 
-**Human Evaluation:**
+#### 🌳 **Causal Forests**
+
+##### **Key Innovation: Treatment Effect-Based Splits**
 ```python
-# Likert scale ratings (1-5) on:
-# - Helpfulness
-# - Harmlessness  
-# - Honesty
-# - Coherence
-# - Factual accuracy
-```
+# Standard Random Forest: Maximize information gain
+# Causal Forest: Maximize treatment effect heterogeneity
 
-#### 🏆 **Leaderboards and Benchmarks**
+# Split criterion:
+heterogeneity = |ATE(left_child) - ATE(right_child)|
+best_split = argmax(heterogeneity)
 
-**Chatbot Arena:**
-- Human preference tournaments
-- ELO ratings for LLMs
-- Real-world usage patterns
-
-**Standard Benchmarks:**
-- **MMLU**: Massive multitask language understanding
-- **HellaSwag**: Commonsense reasoning
-- **HumanEval**: Code generation
-- **GSM8K**: Mathematical reasoning
-
----
-
-### 🎯 **Ethical Considerations and Safety**
-
-#### ⚠️ **Key Challenges**
-
-**1. Data Privacy & Copyright**
-```python
-# Challenges:
-# - Training on copyrighted content
-# - User data privacy in conversations
-# - Opt-out mechanisms for content creators
-
-# Solutions:
-# - Legal frameworks and licensing
-# - Differential privacy techniques
-# - Clear data usage policies
-```
-
-**2. Hallucination Mitigation**
-```python
-# Problem: LLMs generate plausible but false information
-
-# Solutions:
-# 1. RAG for factual grounding
-# 2. Knowledge graph integration
-# 3. Uncertainty quantification
-# 4. Post-generation fact-checking
-# 5. Chain-of-thought for reasoning transparency
-```
-
-**3. Bias and Fairness**
-```python
-# Sources of bias:
-# - Training data reflects societal biases
-# - Underrepresentation of certain groups
-# - Historical prejudices embedded in text
-
-# Mitigation strategies:
-# - Diverse training data curation
-# - Bias detection and measurement
-# - RLHF for alignment with human values
-# - Red teaming and adversarial testing
-```
-
-**4. Misuse Prevention**
-```python
-# Potential misuse:
-# - Spam and misinformation generation
-# - Deepfakes and impersonation
-# - Academic dishonesty
-# - Malicious code generation
-
-# Safeguards:
-# - Output filtering and detection
-# - Usage monitoring and rate limiting
-# - Watermarking generated content
-# - Education and awareness campaigns
-```
-
-#### 🛡️ **Safety Systems**
-
-**LlamaGuard Example:**
-```python
-# AI-powered content moderation
-categories = [
-    "Violence and Hate",
-    "Sexual Content", 
-    "Criminal Planning",
-    "Guns and Illegal Weapons",
-    "Regulated or Controlled Substances",
-    "Self-Harm"
-]
-
-# Usage:
-safety_response = llamaguard.classify(
-    conversation=user_input,
-    policies=categories
-)
-# Returns: "safe" or "unsafe" with violation categories
+# Result: Leaves contain homogeneous treatment effects
+# Enables estimation of heterogeneous treatment effects
 ```
 
 ---
 
-### 🎯 **Real-World Applications Showcase**
+### 🎯 **Data Generative Process Comparison**
 
-#### 🏥 **Healthcare & Science**
-- **AlphaFold**: Protein structure prediction revolutionizing drug discovery
-- **Medical AI**: Diagnostic assistance, clinical decision support
-- **Drug Discovery**: Accelerated molecule generation and optimization
+#### 📊 **Causal Inference vs. Supervised Learning vs. Reinforcement Learning**
 
-#### 💼 **Business & Productivity**
-- **Code Generation**: GitHub Copilot, automated software development
-- **Content Creation**: Marketing copy, technical documentation
-- **Customer Service**: 24/7 intelligent chatbots, personalized support
-
-#### 🎨 **Creative Industries**
-- **Music Generation**: AI composers creating original compositions
-- **Visual Art**: DALL-E, Midjourney, Runway ML for image/video creation
-- **Writing**: Novel assistance, screenplay development, poetry
-
-#### 🔍 **Search & Information**
-- **Perplexity AI**: Conversational search with citations
-- **Character.AI**: Personality-based AI interactions
-- **Educational Tutors**: Personalized learning assistants
+| **Aspect** | **Causal Inference** | **Supervised Learning** | **Reinforcement Learning** |
+|------------|----------------------|--------------------------|----------------------------|
+| **Data Structure** | (Xi, Ti, Yi) with Ti→Yi, Xi→Ti | (Xi, Ti, Yi) with no Xi→Ti | Sequential (St, At, Rt, St+1) |
+| **Objective** | Estimate counterfactuals | Minimize prediction error | Maximize long-term reward |
+| **Key Challenge** | Confounding, selection bias | Overfitting, generalization | Exploration vs exploitation |
+| **Distribution** | Observational ≠ Interventional | Train = Test | Policy-dependent |
 
 ---
- 
+
+## 🔄 Step-by-Step Revision Guide
+
+### 📖 **Phase 1: Conceptual Foundation (Weeks 1-2)**
+
+#### **Week 1: Understanding the Problem**
+- [ ] **Day 1-2**: Study correlation vs causation examples
+  - Work through ice cream/sunburn, marriage/income examples
+  - Understand confounding variables and Simpson's Paradox
+  - Practice identifying confounders in real scenarios
+
+- [ ] **Day 3-4**: Master the Potential Outcomes Framework
+  - Understand Yi(1), Yi(0) notation
+  - Grasp the fundamental problem of causal inference
+  - Learn the difference between factual and counterfactual
+
+- [ ] **Day 5-7**: Study the three core assumptions
+  - SUTVA: When does it hold/fail?
+  - Ignorability: Observed vs unobserved confounders
+  - Positivity: Overlap and common support
+
+#### **Week 2: Treatment Effects**
+- [ ] **Day 1-3**: Understand ATE, CATE, ITE
+  - When to use each level of analysis
+  - Medical vs business applications
+  - Practice calculating from synthetic data
+
+- [ ] **Day 4-7**: Study identification strategies
+  - Randomized experiments vs observational data
+  - Selection bias and its consequences
+  - Design of natural experiments
+
+### 📖 **Phase 2: Classical Methods (Weeks 3-4)**
+
+#### **Week 3: Propensity Score Methods**
+- [ ] **Day 1-2**: Master propensity score theory
+  - Balancing property of propensity scores
+  - Dimension reduction from X to e(X)
+  - Connection to randomized experiments
+
+- [ ] **Day 3-4**: Implement IPW estimator
+  - Code propensity score estimation
+  - Handle extreme weights and trimming
+  - Calculate standard errors
+
+- [ ] **Day 5-6**: Understand importance sampling
+  - Mathematical derivation of IPW
+  - Connection to survey sampling
+  - Bias-variance trade-offs
+
+- [ ] **Day 7**: Study doubly robust methods
+  - Combine propensity scores with outcome modeling
+  - Understand robustness properties
+  - Implementation best practices
+
+#### **Week 4: Stratification and Matching**
+- [ ] **Day 1-3**: Implement subclassification
+  - Quantile-based binning strategies
+  - Balance checking within strata
+  - Sensitivity to number of bins
+
+- [ ] **Day 4-7**: Study matching methods
+  - Nearest neighbor matching
+  - Caliper matching and common support
+  - Assess match quality
+
+### 📖 **Phase 3: Modern Methods (Weeks 5-6)**
+
+#### **Week 5: Representation Learning**
+- [ ] **Day 1-3**: Understand TARNet architecture
+  - Shared representations vs separate heads
+  - Factual vs counterfactual loss
+  - Domain adaptation connections
+
+- [ ] **Day 4-5**: Implement MMD calculation
+  - Kernel choice and hyperparameters
+  - Sample size considerations
+  - Computational efficiency
+
+- [ ] **Day 6-7**: Build end-to-end TARNet
+  - PyTorch/TensorFlow implementation
+  - Loss function balancing
+  - Hyperparameter tuning
+
+#### **Week 6: Tree-Based Methods**
+- [ ] **Day 1-4**: Implement Causal Forests
+  - Modify splitting criteria
+  - Handle treatment effect heterogeneity
+  - Cross-validation for hyperparameters
+
+- [ ] **Day 5-7**: Compare all methods
+  - Synthetic data experiments
+  - Real-world applications
+  - Method selection guidelines
+
+### 📖 **Phase 4: Advanced Topics (Weeks 7-8)**
+
+#### **Week 7: Evaluation and Diagnostics**
+- [ ] **Day 1-3**: Model selection and validation
+  - Cross-validation for causal inference
+  - Sensitivity analysis techniques
+  - Robustness checks
+
+- [ ] **Day 4-7**: Advanced assumptions
+  - Violations and their consequences
+  - Instrumental variables
+  - Regression discontinuity
+
+#### **Week 8: Applications and Extensions**
+- [ ] **Day 1-4**: Real-world case studies
+  - A/B testing and experimentation
+  - Personalized medicine
+  - Economics and policy evaluation
+
+- [ ] **Day 5-7**: Current research frontiers
+  - Causal discovery algorithms
+  - Deep learning approaches
+  - Federated causal inference
+
+---
 
 ## 🚀 Why This Helps In The Future
 
 ### 🎯 **Immediate Technical Benefits**
 
-#### **Foundation for AI Career**
-- **Core Understanding**: Deep knowledge of the most impactful AI technology of our time
-- **Practical Skills**: Ability to build, fine-tune, and deploy LLM-based applications
-- **Problem-Solving**: Framework for approaching complex AI challenges
-- **Adaptability**: Understanding of underlying principles enables quick learning of new models
+#### **Robust Decision Making**
+- **Move beyond correlation**: Make decisions based on true causal relationships
+- **Avoid Simpson's Paradox**: Properly account for confounding in analysis
+- **Quantify interventions**: Estimate the actual impact of policy changes
+- **Handle selection bias**: Work with observational data when RCTs are impossible
 
-#### **Technical Capabilities**
+#### **Advanced Analytics Applications**
+- **A/B Testing**: Design and analyze experiments properly
+- **Personalization**: Estimate individual treatment effects for recommendations
+- **Attribution**: Understand true contribution of marketing channels
+- **Policy Evaluation**: Measure effectiveness of business/government interventions
+
+### 🌟 **Career & Research Advantages**
+
+#### **Industry Applications**
+- **Tech Companies**: 
+  - Recommendation systems with causal guarantees
+  - Ad attribution and marketing mix modeling
+  - Platform experiments and product launches
+  - User behavior analysis and intervention design
+
+- **Healthcare & Pharma**:
+  - Personalized treatment recommendations
+  - Real-world evidence studies
+  - Clinical trial design and analysis
+  - Health economics and outcomes research
+
+- **Finance & Insurance**:
+  - Risk modeling with causal interpretation
+  - Policy intervention analysis
+  - Customer lifetime value modeling
+  - Regulatory compliance and fair lending
+
+- **Government & Policy**:
+  - Program evaluation and impact assessment
+  - Evidence-based policy making
+  - Resource allocation optimization
+  - Social intervention design
+
+#### **Emerging Research Areas**
+- **Causal AI**: Integration of causal reasoning in ML systems
+- **Explainable AI**: Understanding model decisions through causal lens
+- **Fairness & Ethics**: Detecting and removing discriminatory patterns
+- **Federated Learning**: Handling heterogeneity across institutions
+- **AI Safety**: Ensuring robust decision-making under distribution shift
+
+### 💼 **Real-World Impact**
+
+#### **Business Intelligence & Strategy**
 ```python
-# You'll be able to:
-# 1. Build intelligent applications
-chatbot = build_rag_system(knowledge_base, llm_model)
-
-# 2. Optimize model performance
-efficient_model = apply_lora_finetuning(base_model, task_data)
-
-# 3. Evaluate and compare models
-metrics = comprehensive_evaluation(models, benchmarks)
-
-# 4. Design safety systems  
-safe_output = content_filtering(llm_output, safety_policies)
+# Instead of: "Sales increased after marketing campaign"
+# Causal thinking: "Marketing campaign caused X% increase in sales"
+# Enables: ROI calculation, budget optimization, strategic planning
 ```
 
-### 🌟 **Career & Industry Advantages**
-
-#### **High-Demand Skills**
-- **AI Engineering**: Building and scaling LLM applications
-- **Prompt Engineering**: Optimizing human-AI interaction
-- **AI Safety**: Ensuring responsible AI deployment
-- **Research & Development**: Contributing to cutting-edge AI research
-
-#### **Industry Opportunities**
-**Technology Companies:**
-- **Big Tech**: Google, Microsoft, Meta, Amazon, Apple
-- **AI-First Companies**: OpenAI, Anthropic, Cohere, Hugging Face
-- **Startups**: Countless opportunities in AI-powered applications
-
-**Traditional Industries Being Transformed:**
-- **Healthcare**: AI-assisted diagnosis, drug discovery, personalized medicine
-- **Finance**: Automated trading, risk assessment, customer service
-- **Education**: Personalized tutoring, content creation, assessment
-- **Legal**: Document analysis, contract review, legal research
-- **Media**: Content generation, translation, creative assistance
-
-### 💼 **Business and Entrepreneurial Impact**
-
-#### **Product Development**
+#### **Scientific Research**
 ```python
-# Build AI-powered products:
-products = [
-    "Intelligent customer service bots",
-    "Content creation platforms", 
-    "Code generation tools",
-    "Educational tutoring systems",
-    "Creative writing assistants",
-    "Research and analysis tools",
-    "Personalized recommendation engines"
-]
+# Medical Research: Does treatment A work better than treatment B?
+# Social Science: Do education programs improve outcomes?
+# Economics: What's the effect of minimum wage on employment?
 ```
 
-#### **Cost Reduction and Efficiency**
-- **Automation**: Replace repetitive cognitive tasks
-- **Scalability**: Handle massive volumes of requests
-- **Personalization**: Customize experiences at scale
-- **Innovation**: Enable entirely new product categories
-
-#### **Competitive Advantages**
-- **First-Mover Advantage**: Early adoption in your industry
-- **Data Monetization**: Transform existing data into AI capabilities
-- **Process Optimization**: Streamline operations with AI assistance
-- **Customer Experience**: Provide superior, AI-enhanced services
-
-### 🌍 **Societal and Global Impact**
-
-#### **Democratization of AI**
-- **Open Source Models**: Make AI accessible to everyone
-- **Low-Code Solutions**: Enable non-technical users to build AI applications
-- **Educational Access**: Personalized tutoring for global education
-- **Language Barriers**: Breaking down communication barriers worldwide
-
-#### **Scientific Advancement**
+#### **Ethical AI & Fairness**
 ```python
-# AI accelerating discovery in:
-research_areas = [
-    "Drug discovery and development",
-    "Climate change modeling",
-    "Materials science innovation", 
-    "Protein folding and biology",
-    "Mathematical theorem proving",
-    "Code optimization and software engineering"
-]
-```
-
-#### **Creative Renaissance**
-- **Art and Design**: New forms of creative expression
-- **Music and Entertainment**: AI-generated content and interactive experiences
-- **Writing and Literature**: Collaborative human-AI storytelling
-- **Game Development**: Procedural content generation and intelligent NPCs
-
-### 🔮 **Future-Proofing Your Career**
-
-#### **Preparing for the AI-Augmented World**
-- **Human-AI Collaboration**: Learn to work effectively with AI systems
-- **Critical Thinking**: Develop skills that complement AI capabilities
-- **Ethical Leadership**: Guide responsible AI development and deployment
-- **Continuous Learning**: Adapt to rapidly evolving AI landscape
-
-#### **Emerging Opportunities**
-```python
-# New roles being created:
-future_careers = [
-    "AI Trainer and Fine-tuner",
-    "Prompt Engineer and Designer", 
-    "AI Ethics Officer",
-    "Human-AI Interaction Designer",
-    "AI Product Manager",
-    "AI Safety Researcher",
-    "Multimodal AI Specialist",
-    "AI Education Specialist"
-]
+# Detect discrimination: Is outcome disparity due to legitimate factors?
+# Ensure fairness: Remove causal paths that shouldn't influence decisions
+# Build trust: Provide causal explanations for AI decisions
 ```
 
 #### **Long-term Strategic Thinking**
-- **Industry Transformation**: Understand how AI will reshape entire sectors
-- **Regulatory Landscape**: Navigate evolving AI governance and compliance
-- **Global Competition**: Position yourself in the AI-driven economy
-- **Innovation Leadership**: Drive the next wave of AI applications
+- **Scenario Planning**: Model consequences of different interventions
+- **Risk Management**: Understand causal chains leading to failures
+- **Innovation**: Identify causal mechanisms for breakthrough improvements
+- **Sustainability**: Design interventions with long-term positive effects
 
 ---
- 
+
+## 📚 **Implementation Roadmap**
+
+### 🔧 **Beginner Projects (Months 1-2)**
+1. **Simpson's Paradox Demonstration**
+   - Recreate medical treatment example
+   - Show reversal through stratification
+   - Visualize confounding effects
+
+2. **Basic IPW Implementation**
+   - Generate synthetic data with known treatment effects
+   - Implement propensity score estimation
+   - Calculate ATE using IPW
+
+3. **Propensity Score Diagnostics**
+   - Check balance before/after weighting
+   - Assess common support
+   - Handle extreme weights
+
+### 🔧 **Intermediate Projects (Months 3-4)**
+4. **Doubly Robust Estimator**
+   - Combine propensity scores with outcome models
+   - Compare robustness properties
+   - Handle model misspecification
+
+5. **TARNet Implementation**
+   - Build neural network architecture
+   - Implement MMD loss
+   - Train on semi-synthetic datasets
+
+6. **Causal Forest**
+   - Modify random forest splitting criteria
+   - Estimate heterogeneous treatment effects
+   - Validate on known ground truth
+
+### 🔧 **Advanced Projects (Months 5-6)**
+7. **A/B Test Analysis Platform**
+   - Handle network effects and interference
+   - Multiple testing corrections
+   - Heterogeneous treatment effect analysis
+
+8. **Causal Discovery Pipeline**
+   - Implement PC algorithm
+   - Structure learning from data
+   - Validate discovered relationships
+
+9. **Real-world Case Study**
+   - Choose domain (healthcare, marketing, policy)
+   - Apply multiple causal methods
+   - Compare results and provide recommendations
+
 ---
 
 ## 📖 **Essential Resources**
 
-### **📚 Foundational Papers**
-- **"Attention Is All You Need"** (Vaswani et al., 2017) - The Transformer paper
-- **"Language Models are Few-Shot Learners"** (Brown et al., 2020) - GPT-3
-- **"Training language models to follow instructions with human feedback"** (Ouyang et al., 2022) - InstructGPT
-- **"LLaMA: Open and Efficient Foundation Language Models"** (Touvron et al., 2023)
+### **📚 Foundational Textbooks**
+- **"Causal Inference: The Mixtape"** by Scott Cunningham
+  - Practical, code-heavy approach
+  - Real-world examples and implementations
+  - Excellent for practitioners
+
+- **"Causality: Models, Reasoning and Inference"** by Judea Pearl
+  - Theoretical foundation and causal diagrams
+  - Mathematical rigor and formal proofs
+  - Essential for researchers
+
+- **"Mostly Harmless Econometrics"** by Angrist & Pischke
+  - Applied econometric perspective
+  - Natural experiments and identification strategies
+  - Policy evaluation focus
 
 ### **💻 Implementation Libraries**
+
+**Python Ecosystem**
 ```python
 # Core libraries
-import transformers          # Hugging Face ecosystem
-import torch                # PyTorch for deep learning
-import openai               # OpenAI API
-import langchain            # LLM application framework
-import chromadb             # Vector database for RAG
-import gradio               # Quick UI for demos
+import causalml          # Uber's causal ML library
+import dowhy            # Microsoft's causal inference
+import econml           # Microsoft's econometric ML
+import causalinference  # Standard causal methods
 
-# Specialized tools
-import peft                 # Parameter-efficient fine-tuning
-import datasets            # Dataset loading and processing
-import evaluate            # Evaluation metrics
-import accelerate          # Distributed training
+# Deep learning extensions
+import pytorch_lightning
+import tensorflow_probability
 ```
 
-### **🎯 Practical Platforms**
-- **Hugging Face**: Model hub, datasets, and deployment
-- **OpenAI Playground**: Experiment with GPT models
-- **Google Colab**: Free GPU access for experimentation
-- **Replicate**: Easy API access to open-source models
-- **GitHub Copilot**: AI-powered coding assistant
- 
+**R Ecosystem**
+```r
+# Essential packages
+library(grf)           # Generalized Random Forests
+library(tmle)          # Targeted Maximum Likelihood
+library(MatchIt)       # Matching methods
+library(WeightIt)      # Propensity score weighting
+```
+
+### **🎯 Practical Datasets**
+- **IHDP**: Infant Health and Development Program
+- **Jobs**: LaLonde's job training program evaluation
+- **Twins**: Natural experiment data
+- **ACIC**: Atlantic Causal Inference Conference challenges
+
+### **🎥 Session Video**
+[Amazon ML Summer School 2023 – Module 7: Causal Inference](https://youtu.be/KInqvXB0jzQ?si=baHgnSbNlxcZwSGT)
+
 ---
 
 ## 🎯 **Quick Reference Guide**
 
-### **When to Use Each Approach**
-| **Use Case** | **Best Method** | **Cost** | **Time** | **Performance** |
-|--------------|----------------|----------|----------|-----------------|
-| **Quick prototype** | Prompt engineering | $ | Minutes | Good |
-| **Domain adaptation** | Fine-tuning | $$ | Hours-Days | Very good |
-| **Resource constrained** | LoRA/PEFT | $ | Hours | Good |
-| **Factual accuracy** | RAG | $ | Days | Excellent |
-| **New language/domain** | Full fine-tuning | $$$ | Days-Weeks | Excellent |
+### **When to Use Each Method**
+| **Scenario** | **Best Method** | **Rationale** |
+|--------------|----------------|---------------|
+| **High-dimensional confounders** | TARNet, DR methods | Handle complexity |
+| **Strong propensity overlap** | IPW, Subclassification | Simple, interpretable |
+| **Heterogeneous effects needed** | Causal Forest, TARNet | Individual-level estimates |
+| **Model uncertainty** | Doubly Robust | Robustness guarantee |
+| **Limited data** | Matching | Non-parametric |
 
-### **Model Selection Guide**
-| **Task** | **Recommended Model** | **Rationale** |
-|----------|----------------------|---------------|
-| **General chat** | GPT-4, Claude 3.5 | Best instruction following |
-| **Code generation** | GitHub Copilot, GPT-4 | Trained on code |
-| **Open-source deployment** | Llama 3, Mistral | High performance, permissive license |
-| **Multimodal tasks** | GPT-4V, Gemini Pro | Vision + language capabilities |
-| **Long context** | Claude 3, Gemini Pro | Extended context windows |
+### **Common Pitfalls & Solutions**
+| **Problem** | **Symptom** | **Solution** |
+|-------------|-------------|--------------|
+| **Unmeasured confounding** | Implausible effect sizes | Sensitivity analysis, IV |
+| **Positivity violations** | Extreme weights | Trimming, overlap checks |
+| **Model misspecification** | Poor balance | Ensemble methods, DR |
+| **Selection bias** | Strong T-Y correlation | Better confounder measurement |
 
-### **Key Metrics Quick Reference**
+### **Key Formulas**
 ```python
-# Text Generation Quality
-perplexity = 2^(-log_likelihood)  # Lower is better
-bleu_score = n_gram_precision     # Higher is better (0-1)
-rouge_score = n_gram_recall       # Higher is better (0-1)
+# Propensity Score
+e(x) = P(T=1|X=x)
 
-# Safety and Alignment  
-toxicity_score = classifier(text) # Lower is better
-bias_score = demographic_parity   # Closer to 0 is better
-factuality = fact_checker(claims) # Higher is better
+# IPW Estimator
+ATE = E[T*Y/e(X)] - E[(1-T)*Y/(1-e(X))]
+
+# Doubly Robust
+ATE_DR = ATE_IPW + E[(1-T)*(μ₁(X) - μ₀(X))]
+
+# MMD (Maximum Mean Discrepancy)
+MMD²(P,Q) = E[k(X,X')] + E[k(Y,Y')] - 2E[k(X,Y)]
 ```
 
 ---
 
-**#GenerativeAI #LLMs #Transformers #GPT #ChatGPT #LLaMA #RLHF #PromptEngineering #FineTuning #RAG #MultimodalAI #AmazonMLSummerSchool #MachineLearning #NLP #AI #RevisionGuide**
+**#CausalInference #TreatmentEffects #PropensityScore #TARNet #CausalForests #DoublyRobust #AmazonMLSummerSchool #MachineLearning #Statistics #DataScience #RevisionGuide**
 
 ---
 
-> *"We are witnessing the emergence of artificial general intelligence in the form of large language models. Understanding these systems isn't just about keeping up with technology – it's about participating in the most significant transformation of human capability since the invention of writing."*
+> *"The goal is to replace much of human intuition about causation with a more principled approach based on causal models. Causal inference is not just a statistical technique – it's a way of thinking about the world that leads to more reliable decisions and scientific discoveries."*
