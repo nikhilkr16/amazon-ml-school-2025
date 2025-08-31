@@ -1,4 +1,4 @@
-# 🔍 Amazon ML Summer School 2023 – Module 7: Causal Inference
+# 🔍 Amazon ML Summer School 2025 – Module 8: Causal Inference
 
 <div align="center">
 
@@ -523,9 +523,6 @@ library(WeightIt)      # Propensity score weighting
 - **Jobs**: LaLonde's job training program evaluation
 - **Twins**: Natural experiment data
 - **ACIC**: Atlantic Causal Inference Conference challenges
-
-### **🎥 Session Video**
-[Amazon ML Summer School 2023 – Module 7: Causal Inference](https://youtu.be/KInqvXB0jzQ?si=baHgnSbNlxcZwSGT)
 
 ---
 
